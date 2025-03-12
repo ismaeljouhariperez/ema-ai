@@ -4,8 +4,10 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.chains import LLMChain
 from app.core.config import settings
 from app.models.adventure import Adventure
+from app.core.exceptions import PromptProcessingError, OpenAIError, InvalidPromptError
 from loguru import logger
 from tenacity import retry, stop_after_attempt, wait_exponential
+import openai
 
 class AdventureGenerator:
     """Service pour générer des aventures à partir de prompts utilisateurs"""
@@ -61,8 +63,17 @@ class AdventureGenerator:
             
         Returns:
             Un objet Adventure contenant les détails de l'aventure générée
+            
+        Raises:
+            InvalidPromptError: Si le prompt est vide ou invalide
+            OpenAIError: Si une erreur se produit avec l'API OpenAI
+            PromptProcessingError: Si une erreur se produit lors du traitement du prompt
         """
         try:
+            # Valider le prompt
+            if not prompt or len(prompt.strip()) < 5:
+                raise InvalidPromptError("Le prompt doit contenir au moins 5 caractères")
+                
             logger.info(f"Génération d'une aventure pour le prompt: {prompt}")
             
             # Exécuter la chaîne LLM
@@ -74,6 +85,9 @@ class AdventureGenerator:
             logger.info(f"Aventure générée avec succès: {adventure.title}")
             return adventure
             
+        except openai.OpenAIError as e:
+            logger.error(f"Erreur OpenAI lors de la génération de l'aventure: {str(e)}")
+            raise OpenAIError(f"Erreur lors de la communication avec OpenAI: {str(e)}")
         except Exception as e:
             logger.error(f"Erreur lors de la génération de l'aventure: {str(e)}")
-            raise 
+            raise PromptProcessingError(f"Erreur lors du traitement du prompt: {str(e)}") 

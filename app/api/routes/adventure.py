@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.models.adventure import AdventurePrompt, Adventure, SimilarAdventureRequest, SimilarAdventuresResponse
 from app.services.adventure_generator import AdventureGenerator
 from app.services.similarity_search import SimilaritySearch
+from app.core.exceptions import PromptProcessingError, OpenAIError, InvalidPromptError, AdventureNotFoundError
 from loguru import logger
 
 # Créer le router
@@ -25,17 +26,14 @@ async def generate_adventure(
     - **prompt**: Le texte décrivant l'aventure souhaitée
     
     Retourne un objet Adventure contenant tous les détails de l'aventure générée.
+    
+    Peut lever les exceptions suivantes:
+    - 400 Bad Request: Si le prompt est invalide
+    - 500 Internal Server Error: Si une erreur se produit lors du traitement
+    - 503 Service Unavailable: Si l'API OpenAI est indisponible
     """
-    try:
-        logger.info(f"Requête de génération d'aventure reçue: {prompt.prompt}")
-        adventure = await generator.generate_adventure(prompt.prompt)
-        return adventure
-    except Exception as e:
-        logger.error(f"Erreur lors de la génération d'aventure: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Erreur lors de la génération d'aventure: {str(e)}"
-        )
+    logger.info(f"Requête de génération d'aventure reçue: {prompt.prompt}")
+    return await generator.generate_adventure(prompt.prompt)
 
 @router.post("/search_similar", response_model=SimilarAdventuresResponse, summary="Trouver des aventures similaires")
 async def search_similar_adventures(
@@ -48,14 +46,9 @@ async def search_similar_adventures(
     - **adventure_id**: L'ID de l'aventure pour laquelle chercher des similaires
     
     Retourne une liste d'aventures similaires avec leurs scores de similarité.
+    
+    Peut lever les exceptions suivantes:
+    - 404 Not Found: Si l'aventure avec l'ID spécifié n'existe pas
     """
-    try:
-        logger.info(f"Requête de recherche d'aventures similaires reçue pour ID: {request.adventure_id}")
-        similar_adventures = await similarity_search.find_similar_adventures(request.adventure_id)
-        return similar_adventures
-    except Exception as e:
-        logger.error(f"Erreur lors de la recherche d'aventures similaires: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Erreur lors de la recherche d'aventures similaires: {str(e)}"
-        ) 
+    logger.info(f"Requête de recherche d'aventures similaires reçue pour ID: {request.adventure_id}")
+    return await similarity_search.find_similar_adventures(request.adventure_id) 

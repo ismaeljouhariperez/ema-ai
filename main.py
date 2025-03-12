@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import api_router
 from app.core.config import settings
 from app.core.logging import setup_logging
+from app.core.exceptions import EmaAIException, ema_exception_handler
 
 # Configurer le logger
 logger = setup_logging()
@@ -25,6 +26,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Ajouter le gestionnaire d'exceptions personnalisées
+app.add_exception_handler(EmaAIException, ema_exception_handler)
 
 # Inclure les routes API
 app.include_router(api_router)

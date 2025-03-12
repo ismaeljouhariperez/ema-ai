@@ -1,4 +1,5 @@
 from app.models.adventure import SimilarAdventure, SimilarAdventuresResponse
+from app.core.exceptions import AdventureNotFoundError
 from loguru import logger
 from typing import List
 
@@ -42,13 +43,16 @@ class SimilaritySearch:
             
         Returns:
             Un objet SimilarAdventuresResponse contenant la liste des aventures similaires
+            
+        Raises:
+            AdventureNotFoundError: Si l'aventure avec l'ID spécifié n'existe pas
         """
         logger.info(f"Recherche d'aventures similaires pour l'ID: {adventure_id}")
         
         # Vérifier si l'aventure existe
         if adventure_id not in self.mock_adventures:
             logger.warning(f"Aventure avec ID {adventure_id} non trouvée")
-            return SimilarAdventuresResponse(similar_adventures=[])
+            raise AdventureNotFoundError(adventure_id)
         
         # Récupérer les IDs des aventures similaires
         similar_ids = self.mock_similarities.get(adventure_id, [])

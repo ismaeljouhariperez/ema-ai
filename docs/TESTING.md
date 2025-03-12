@@ -80,6 +80,117 @@ Expected response:
 }
 ```
 
+## Error Handling
+
+The API provides consistent error responses with the following format:
+
+```json
+{
+  "error": true,
+  "code": "ERROR_CODE",
+  "message": "Detailed error message",
+  "path": "/api/endpoint"
+}
+```
+
+### Common Error Codes
+
+| Error Code                | HTTP Status | Description                              |
+| ------------------------- | ----------- | ---------------------------------------- |
+| `INVALID_PROMPT`          | 400         | The prompt is empty or invalid           |
+| `ADVENTURE_NOT_FOUND`     | 404         | The requested adventure ID doesn't exist |
+| `PROMPT_PROCESSING_ERROR` | 500         | Error processing the prompt              |
+| `OPENAI_API_ERROR`        | 503         | Error communicating with OpenAI API      |
+
+### Testing Error Responses
+
+#### Invalid Prompt
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": ""}' \
+  http://localhost:8000/api/generate
+```
+
+Expected response:
+
+```json
+{
+  "error": true,
+  "code": "INVALID_PROMPT",
+  "message": "Le prompt doit contenir au moins 5 caractères",
+  "path": "/api/generate"
+}
+```
+
+#### Adventure Not Found
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"adventure_id": 999}' \
+  http://localhost:8000/api/search_similar
+```
+
+Expected response:
+
+```json
+{
+  "error": true,
+  "code": "ADVENTURE_NOT_FOUND",
+  "message": "Adventure with ID 999 not found",
+  "path": "/api/search_similar"
+}
+```
+
+## Using Helper Scripts
+
+The project includes several helper scripts to make testing easier:
+
+### Starting the Service
+
+```bash
+./scripts/start.sh
+```
+
+This script:
+
+- Creates a virtual environment if needed
+- Installs dependencies
+- Creates a `.env` file if needed
+- Starts the service
+
+### Running Tests
+
+```bash
+./scripts/test.sh
+```
+
+This script:
+
+- Creates a virtual environment if needed
+- Installs dependencies
+- Runs all tests
+
+To run a specific test:
+
+```bash
+./scripts/test.sh tests/test_routes.py::test_health_check
+```
+
+### Testing Error Handling
+
+```bash
+# Install colorama first
+pip install colorama
+
+# Run the error testing script
+python scripts/test_errors.py
+```
+
+This script tests various error scenarios and displays the responses in a formatted way.
+
 ## API Documentation
 
 For interactive API documentation, visit:
