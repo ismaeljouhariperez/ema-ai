@@ -81,6 +81,7 @@ The API will be accessible at `http://localhost:8000`
 | ------ | --------------------- | ------------------------------ |
 | POST   | `/api/generate`       | Generate adventure from prompt |
 | POST   | `/api/search_similar` | Find similar adventures        |
+| GET    | `/health`             | Check API health status        |
 | GET    | `/docs`               | API documentation (Swagger UI) |
 | GET    | `/redoc`              | API documentation (ReDoc)      |
 
@@ -93,7 +94,7 @@ This service is designed to work with the EMA-API (Rails) service. The integrati
 3. EMA-AI returns a structured JSON response
 4. EMA-API stores the adventure in its database
 
-For detailed integration information, see the [INTEGRATION.md](INTEGRATION.md) document in the EMA-API repository.
+For detailed integration information, see the [INTEGRATION.md](docs/INTEGRATION.md) document.
 
 ## 🧠 Adventure Generation
 
@@ -126,6 +127,14 @@ Je cherche une randonnée près de Bordeaux
   "latitude": 44.8946,
   "longitude": -0.1556
 }
+```
+
+## 🧪 Tests
+
+To run the tests:
+
+```sh
+pytest
 ```
 
 ## 🚀 Deployment
@@ -168,8 +177,7 @@ ema-ai/
 │   ├── api/
 │   │   ├── routes/
 │   │   │   ├── __init__.py
-│   │   │   ├── adventure.py
-│   │   │   └── search.py
+│   │   │   └── adventure.py
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── __init__.py
