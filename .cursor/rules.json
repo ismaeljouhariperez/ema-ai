@@ -1,0 +1,70 @@
+{
+  "python": {
+    "formatter": "black",
+    "linter": "flake8",
+    "typeChecker": "mypy",
+    "importSorter": "isort",
+    "formatOnSave": true,
+    "lintOnSave": true,
+    "typeCheckOnSave": true,
+    "sortImportsOnSave": true,
+    "pythonPath": "${workspaceFolder}/venv/bin/python",
+    "venvPath": "${workspaceFolder}/venv",
+    "testFramework": "pytest",
+    "testCommand": "pytest",
+    "testDiscoveryPatterns": ["tests/**/*.py"],
+    "codeLens": {
+      "runTest": true,
+      "debugTest": true
+    }
+  },
+  "fastapi": {
+    "routePatterns": ["app/api/routes/**/*.py"],
+    "modelPatterns": ["app/models/**/*.py"],
+    "servicePatterns": ["app/services/**/*.py"]
+  },
+  "langchain": {
+    "patterns": [
+      "app/services/adventure_generator.py",
+      "app/services/similarity_search.py"
+    ]
+  },
+  "openai": {
+    "patterns": ["app/services/adventure_generator.py"]
+  },
+  "editor": {
+    "formatOnSave": true,
+    "tabSize": 4,
+    "insertSpaces": true,
+    "rulers": [88],
+    "wordWrap": "off",
+    "trimTrailingWhitespace": true,
+    "insertFinalNewline": true
+  },
+  "files": {
+    "exclude": {
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/.mypy_cache": true,
+      "**/.coverage": true,
+      "**/htmlcov": true,
+      "**/.DS_Store": true,
+      "**/venv": true,
+      "**/.env": true
+    },
+    "watcherExclude": {
+      "**/__pycache__/**": true,
+      "**/.pytest_cache/**": true,
+      "**/.mypy_cache/**": true,
+      "**/venv/**": true
+    }
+  },
+  "search": {
+    "exclude": {
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/.mypy_cache": true,
+      "**/venv": true
+    }
+  }
+}
