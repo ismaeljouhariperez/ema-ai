@@ -137,6 +137,8 @@ To run the tests:
 pytest
 ```
 
+For manual API testing with curl or Python, see the [TESTING.md](docs/TESTING.md) document.
+
 ## 🚀 Deployment
 
 ### **Environment Variables**
